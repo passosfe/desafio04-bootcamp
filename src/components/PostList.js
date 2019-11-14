@@ -2,12 +2,14 @@ import React, { Component } from "react";
 import { format } from "date-fns";
 
 import PostItem from "./PostItem";
+import Input from "./Input";
 
 import avatar from "../assets/profile.jpeg";
 
 class PostList extends Component {
   state = {
     newPost: "",
+    newComment: "",
     posts: [
       {
         id: 1,
@@ -69,7 +71,19 @@ class PostList extends Component {
     ]
   };
 
-  //componentDidUpdate(_, )
+  componentDidMount() {
+    const posts = localStorage.getItem("posts");
+
+    if (posts) {
+      this.setState({ posts: JSON.parse(posts) });
+    }
+  }
+
+  componentDidUpdate(_, prevState) {
+    if (prevState.posts !== this.state.posts) {
+      localStorage.setItem("posts", JSON.stringify(this.state.posts));
+    }
+  }
 
   handleInputChange = ({ target }) => {
     this.setState({ [target.name]: target.value });
@@ -100,19 +114,13 @@ class PostList extends Component {
   render() {
     return (
       <div className="post-list">
-        <form className="card" onSubmit={this.handleSubmit}>
-          <textarea
-            rows="4"
-            cols="50"
-            name="newPost"
-            placeholder="What are you thinking about?"
-            value={this.state.newPost}
-            onChange={this.handleInputChange}
-          />
-          <button type="submit">
-            <i className="material-icons">send</i>
-          </button>
-        </form>
+        <Input
+          className="card"
+          name="newPost"
+          handleInputChange={this.handleInputChange}
+          value={this.state.newPost}
+          handleSubmit={this.handleSubmit}
+        />
         {this.state.posts.map((item) => (
           <PostItem key={item.id} data={item} />
         ))}

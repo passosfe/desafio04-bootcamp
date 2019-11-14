@@ -29,6 +29,7 @@ function Comment({ data }) {
 
 function PostItem({ data }) {
   const { author, date, content, comments } = data;
+
   return (
     <div className="card">
       <Post author={author} date={date} />
